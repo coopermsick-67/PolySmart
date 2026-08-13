@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -8,7 +9,8 @@ import { formatCents, formatPct, formatRelativeTime, formatUsd } from "@/lib/uti
 import { shortenAddress } from "@/lib/polymarket/wallets";
 import { buildIdeaExplanation } from "@/lib/scoring/explanation";
 import { SignalTierBadge } from "@/components/signal-tier-badge";
-import { ExternalLink } from "lucide-react";
+import { QuickLogTradeDialog } from "@/components/portfolio/quick-log-dialog";
+import { ExternalLink, NotebookPen } from "lucide-react";
 import type { TradeIdea } from "@/lib/types";
 
 export function MarketDetailDrawer({
@@ -20,6 +22,8 @@ export function MarketDetailDrawer({
   onOpenChange: (open: boolean) => void;
   onSelectWallet: (wallet: string) => void;
 }) {
+  const [quickLogOpen, setQuickLogOpen] = useState(false);
+
   return (
     <Dialog open={idea !== null} onOpenChange={onOpenChange}>
       <DialogContent widePanel>
@@ -63,13 +67,18 @@ export function MarketDetailDrawer({
               {buildIdeaExplanation(idea)}
             </p>
 
-            {idea.polymarketUrl && (
-              <Button asChild variant="outline" size="sm" className="mt-3">
-                <a href={idea.polymarketUrl} target="_blank" rel="noreferrer">
-                  View on Polymarket <ExternalLink className="h-3.5 w-3.5" />
-                </a>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Button size="sm" onClick={() => setQuickLogOpen(true)}>
+                <NotebookPen className="h-3.5 w-3.5" /> Log this trade
               </Button>
-            )}
+              {idea.polymarketUrl && (
+                <Button asChild variant="outline" size="sm">
+                  <a href={idea.polymarketUrl} target="_blank" rel="noreferrer">
+                    View on Polymarket <ExternalLink className="h-3.5 w-3.5" />
+                  </a>
+                </Button>
+              )}
+            </div>
 
             <section className="mt-6">
               <h4 className="mb-2 text-xs font-medium uppercase tracking-wide text-neutral-500">
@@ -93,6 +102,7 @@ export function MarketDetailDrawer({
           </>
         )}
       </DialogContent>
+      <QuickLogTradeDialog idea={quickLogOpen ? idea : null} onOpenChange={(open) => !open && setQuickLogOpen(false)} />
     </Dialog>
   );
 }

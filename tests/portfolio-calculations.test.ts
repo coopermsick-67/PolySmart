@@ -15,6 +15,8 @@ function trade(overrides: Partial<Trade> & Pick<Trade, "status">): Trade {
     notes: null,
     openedAt: "2026-01-01T00:00:00.000Z",
     closedAt: null,
+    conditionId: null,
+    consensusScoreAtEntry: null,
     ...overrides,
   };
 }

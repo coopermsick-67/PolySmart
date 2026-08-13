@@ -19,6 +19,7 @@ export function TradeTable({
             <TableHead>Market</TableHead>
             <TableHead>Outcome</TableHead>
             <TableHead>Entry</TableHead>
+            <TableHead>Current</TableHead>
             <TableHead>Stake</TableHead>
             <TableHead>Shares</TableHead>
             <TableHead>Status</TableHead>
@@ -29,7 +30,7 @@ export function TradeTable({
         <TableBody>
           {trades.length === 0 && (
             <TableRow>
-              <TableCell colSpan={8} className="py-8 text-center text-neutral-500">
+              <TableCell colSpan={9} className="py-8 text-center text-neutral-500">
                 No trades logged yet.
               </TableCell>
             </TableRow>

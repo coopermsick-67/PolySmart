@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { computeTradePnl } from "@/lib/portfolio/calculations";
 import { formatCents, formatUsd, safeExternalUrl } from "@/lib/utils";
-import { ExternalLink, Trash2 } from "lucide-react";
+import { ExternalLink, Radio, Trash2 } from "lucide-react";
 import type { Trade, TradeStatus } from "@/lib/portfolio/types";
 
 const STATUS_VARIANT: Record<TradeStatus, "default" | "danger" | "warning" | "secondary"> = {
@@ -32,6 +32,7 @@ export function TradeRow({
   const pnl = computeTradePnl(trade);
   const displayPnl = trade.status === "open" ? pnl.unrealizedPnl : pnl.realizedPnl;
   const safeUrl = safeExternalUrl(trade.polymarketUrl);
+  const isLiveTracked = trade.status === "open" && trade.conditionId !== null;
 
   function closeAs(status: "won" | "lost") {
     onUpdate(trade.id, { status, closedAt: new Date().toISOString() });
@@ -65,9 +66,29 @@ export function TradeRow({
         )}
       </TableCell>
       <TableCell>
-        <Badge variant="outline">{trade.outcome}</Badge>
+        <div className="flex items-center gap-1">
+          <Badge variant="outline">{trade.outcome}</Badge>
+          {trade.consensusScoreAtEntry !== null && (
+            <span
+              className="text-[10px] tabular-nums text-neutral-500"
+              title="Consensus score at the time this trade was logged"
+            >
+              {trade.consensusScoreAtEntry.toFixed(0)}
+            </span>
+          )}
+        </div>
       </TableCell>
       <TableCell className="tabular-nums">{formatCents(trade.entryPriceCents / 100)}</TableCell>
+      <TableCell className="tabular-nums">
+        <div className="flex items-center gap-1.5">
+          {trade.currentPriceCents !== null ? formatCents(trade.currentPriceCents / 100) : "—"}
+          {isLiveTracked && (
+            <span title="Price updates automatically from the live market">
+              <Radio className="h-3 w-3 text-emerald-400" />
+            </span>
+          )}
+        </div>
+      </TableCell>
       <TableCell className="tabular-nums">{formatUsd(trade.stakeUsd)}</TableCell>
       <TableCell className="tabular-nums text-neutral-400">{pnl.shares.toFixed(1)}</TableCell>
       <TableCell>
@@ -89,9 +110,11 @@ export function TradeRow({
               <Button size="sm" variant="outline" onClick={() => setMode("sell")}>
                 Sell
               </Button>
-              <Button size="sm" variant="ghost" onClick={() => setMode("price")}>
-                Update price
-              </Button>
+              {!isLiveTracked && (
+                <Button size="sm" variant="ghost" onClick={() => setMode("price")}>
+                  Update price
+                </Button>
+              )}
               <Button size="sm" variant="ghost" onClick={() => onDelete(trade.id)} aria-label="Delete trade">
                 <Trash2 className="h-3.5 w-3.5" />
               </Button>
