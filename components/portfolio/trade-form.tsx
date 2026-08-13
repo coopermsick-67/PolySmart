@@ -6,8 +6,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { formatUsd } from "@/lib/utils";
-import { AlertTriangle, PlusCircle } from "lucide-react";
+import { suggestStake } from "@/lib/portfolio/sizing";
+import { AlertTriangle, PlusCircle, Sparkles } from "lucide-react";
 import type { Trade } from "@/lib/portfolio/types";
+
+/**
+ * A manually-logged trade has no consensus score of its own, so the
+ * suggestion here uses a flat "moderate" score as a neutral default — it's
+ * a general bankroll-discipline guardrail (never more than a few percent of
+ * available bankroll), not a claim about this specific trade's quality. A
+ * trade logged straight from a dashboard idea (see QuickLogTradeDialog)
+ * uses that idea's real consensus score instead.
+ */
+const NEUTRAL_SCORE_FOR_MANUAL_ENTRY = 55;
 
 export function TradeForm({
   onAdd,
@@ -29,6 +40,7 @@ export function TradeForm({
   const canSubmit = marketQuestion.trim().length > 0 && outcome.trim().length > 0 && entryValid && stakeValid;
   const exceedsAvailable =
     stakeValid && availableBankrollUsd !== null && Number(stakeUsd) > availableBankrollUsd;
+  const suggestion = suggestStake(availableBankrollUsd, NEUTRAL_SCORE_FOR_MANUAL_ENTRY);
 
   function handleSubmit() {
     if (!canSubmit) return;
@@ -45,6 +57,8 @@ export function TradeForm({
       notes: notes.trim() || null,
       openedAt: new Date().toISOString(),
       closedAt: null,
+      conditionId: null,
+      consensusScoreAtEntry: null,
     };
     onAdd(trade);
     setMarketQuestion("");
@@ -94,6 +108,17 @@ export function TradeForm({
             />
           </FormField>
         </div>
+        {suggestion && (
+          <button
+            type="button"
+            onClick={() => setStakeUsd(String(suggestion.stakeUsd))}
+            className="flex w-fit items-center gap-1.5 rounded-md border border-neutral-800 bg-neutral-900/60 px-2 py-1 text-xs text-neutral-400 hover:border-neutral-700 hover:text-neutral-200"
+          >
+            <Sparkles className="h-3.5 w-3.5 text-emerald-400" />
+            Suggested stake from available bankroll: {formatUsd(suggestion.stakeUsd)} (
+            {(suggestion.bankrollFraction * 100).toFixed(1)}%)
+          </button>
+        )}
         {exceedsAvailable && (
           <div className="flex items-start gap-1.5 rounded-md border border-amber-900/50 bg-amber-950/30 p-2 text-xs text-amber-300">
             <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />

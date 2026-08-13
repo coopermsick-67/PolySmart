@@ -21,6 +21,15 @@ export const TradeSchema = z.object({
   notes: z.string().nullable(),
   openedAt: z.string(),
   closedAt: z.string().nullable(),
+  /**
+   * Gamma conditionId, set only when a trade is logged straight from a
+   * consensus idea on the dashboard. Enables `currentPriceCents` to be kept
+   * in sync with the live market price; manually-logged trades have this
+   * null and keep the old fully-manual "Update price" flow.
+   */
+  conditionId: z.string().nullable().default(null),
+  /** Consensus score (0-100) at the moment this trade was logged, if it came from a dashboard idea. Historical — not recomputed later. */
+  consensusScoreAtEntry: z.number().min(0).max(100).nullable().default(null),
 });
 export type Trade = z.infer<typeof TradeSchema>;
 
