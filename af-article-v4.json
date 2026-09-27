@@ -1,0 +1,97 @@
+{
+  "sections": {
+    "section": {
+      "type": "main-blog-post",
+      "blocks": {
+        "blog-post-title": {
+          "type": "text",
+          "name": "t:names.title",
+          "settings": {
+            "width": "100%",
+            "max_width": "normal",
+            "font": "var(--font-body--family)",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0,
+            "text": "<h1>{{ article.title }}</h1>",
+            "alignment": "center",
+            "type_preset": "h2"
+          },
+          "blocks": {}
+        },
+        "blog-post-details": {
+          "type": "_blog-post-info-text",
+          "name": "t:names.details",
+          "settings": {
+            "show_date": true,
+            "show_author": true,
+            "alignment": "center",
+            "show_alignment": true,
+            "padding-block-start": 0,
+            "padding-block-end": 0
+          },
+          "blocks": {}
+        },
+        "blog-post-image": {
+          "type": "image",
+          "name": "t:names.featured_image",
+          "settings": {
+            "image": "{{ article.image }}",
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "blog-post-content": {
+          "type": "_blog-post-content",
+          "settings": {},
+          "blocks": {}
+        },
+        "af_post_foot": {
+          "type": "custom-liquid",
+          "name": "Author, next step, related posts",
+          "settings": {
+            "custom_liquid": "{%- assign af_cur = article.handle -%}{%- assign af_picked = '' -%}{%- assign af_n = 0 -%}{%- for a in blog.articles -%}{%- if af_n < 3 and a.handle != af_cur -%}{%- assign af_share = false -%}{%- for t in a.tags -%}{%- if article.tags contains t -%}{%- assign af_share = true -%}{%- endif -%}{%- endfor -%}{%- if af_share -%}{%- assign af_picked = af_picked | append: a.handle | append: ',' -%}{%- assign af_n = af_n | plus: 1 -%}{%- endif -%}{%- endif -%}{%- endfor -%}{%- for a in blog.articles -%}{%- if af_n < 3 and a.handle != af_cur -%}{%- assign af_key = a.handle | append: ',' -%}{%- unless af_picked contains af_key -%}{%- assign af_picked = af_picked | append: af_key -%}{%- assign af_n = af_n | plus: 1 -%}{%- endunless -%}{%- endif -%}{%- endfor -%}<div class='af-post-foot'><div class='af-author'><img src='{{ 'af-apple-touch-icon.png' | asset_url }}' alt='' width='56' height='56' loading='lazy'><div><strong>Written by Cooper, Agency Fieldnotes</strong><p>Practical, no-hype playbooks for starting an AI services agency and landing the first paying clients. <a href='/pages/about'>About Agency Fieldnotes</a></p></div></div><div class='af-next'><p class='af-next-k'>Your next step</p><h2>Score your AI service idea before you build it.</h2><p>The free AI Service Offer Scorecard rates one idea out of 16 and gives you a 7-day validation sprint.</p><div class='af-next-btns'><a class='af-b1' href='/pages/free-ai-service-offer-scorecard?utm_source=blog&amp;utm_medium=owned&amp;utm_campaign=scorecard&amp;utm_content={{ article.handle }}-footer'>Get the free scorecard</a><a class='af-b2' href='/products/ai-agency-launch-kit-complete-bundle?utm_source=blog&amp;utm_medium=owned&amp;utm_campaign=kit&amp;utm_content={{ article.handle }}-footer'>See the full Launch Kit</a></div></div>{%- assign af_pins = 'how-to-start-an-ai-agency-with-no-experience,ai-agency-niches,how-to-price-ai-automation-services,ai-agency-tool-stack,cold-email-templates-for-ai-agencies,how-to-get-first-ai-agency-client,ai-discovery-call-script,mistakes-new-ai-agencies-make,chatgpt-claude-prompts-for-ai-agency-owners,ai-agency-proposal-scope-template,validate-ai-service-offer-before-building' | split: ',' -%}{%- assign af_link = shop.url | append: article.url -%}{%- assign af_media = article.image | image_url: width: 1200 | prepend: 'https:' -%}{%- assign af_haspin = false -%}{%- if af_pins contains article.handle -%}{%- assign af_haspin = true -%}{%- assign af_pinfile = 'pin-' | append: article.handle | append: '.jpg' -%}{%- assign af_media = af_pinfile | file_url | prepend: 'https:' -%}{%- endif -%}<div class='af-share'>{%- if af_haspin -%}<img src='{{ af_pinfile | file_img_url: '240x' }}' alt='Pinterest pin for {{ article.title | escape }}' width='120' height='180' loading='lazy' data-pin-media='{{ af_media }}' data-pin-description='{{ article.title | escape }} - free guide from Agency Fieldnotes'>{%- endif -%}<div><strong>Save or share this guide</strong><p>Keep it for later or send it to someone starting an AI agency.</p><div class='af-share-btns'><a href='https://www.pinterest.com/pin/create/button/?url={{ af_link | append: '?utm_source=pinterest&utm_medium=social&utm_campaign=share' | url_encode }}&amp;media={{ af_media | url_encode }}&amp;description={{ article.title | append: ' - Agency Fieldnotes' | url_encode }}' target='_blank' rel='noopener'>Save to Pinterest</a><a href='https://www.linkedin.com/sharing/share-offsite/?url={{ af_link | append: '?utm_source=linkedin&utm_medium=social&utm_campaign=share' | url_encode }}' target='_blank' rel='noopener'>Share on LinkedIn</a><a href='https://x.com/intent/post?url={{ af_link | append: '?utm_source=x&utm_medium=social&utm_campaign=share' | url_encode }}&amp;text={{ article.title | url_encode }}' target='_blank' rel='noopener'>Post on X</a></div></div></div>{%- if af_n > 0 -%}<div class='af-rel'><p class='af-next-k'>Keep reading</p><div class='af-rel-grid'>{%- for a in blog.articles -%}{%- assign af_key = a.handle | append: ',' -%}{%- if af_picked contains af_key -%}<a class='af-rel-card' href='{{ a.url }}'>{%- if a.image -%}{{ a.image | image_url: width: 600 | image_tag: loading: 'lazy', alt: a.title, widths: '300,450,600', sizes: '(max-width: 740px) 100vw, 33vw' }}{%- endif -%}<strong>{{ a.title }}</strong></a>{%- endif -%}{%- endfor -%}</div></div>{%- endif -%}</div><style>.af-post-foot{width:100%;max-width:760px;margin:8px auto 0;display:grid;gap:28px;color:#161815}.af-author{display:flex;gap:14px;align-items:flex-start;padding:18px;border:1px solid #ded8ce;border-radius:14px;background:#fffdfa}.af-author img{width:56px;height:56px;border-radius:12px;flex:none}.af-author p{margin:4px 0 0;font-size:.9rem;color:#666b64}.af-author a{color:#651d32}.af-next{padding:28px;border-radius:16px;background:#3c101e;color:#fffdfa}.af-next h2{margin:0 0 8px;font-size:clamp(1.4rem,3vw,1.9rem);line-height:1.1;color:#fffdfa}.af-next p{margin:0 0 18px;color:#f2dbe1}.af-next-k{margin:0 0 8px!important;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#d98da0!important}.af-rel .af-next-k{color:#651d32!important}.af-next-btns{display:flex;flex-wrap:wrap;gap:10px}.af-next-btns a{display:inline-block;padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none}.af-b1{background:#fffdfa;color:#651d32}.af-b2{border:1px solid #d98da0;color:#fffdfa}.af-rel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.af-rel-card{display:grid;gap:8px;align-content:start;text-decoration:none;color:#161815}.af-rel-card img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px}.af-rel-card strong{font-size:.95rem;line-height:1.3}.af-rel-card:hover strong{color:#651d32}.af-share{display:flex;gap:18px;align-items:center;padding:18px;border:1px solid #ded8ce;border-radius:14px;background:#f7f4ee}.af-share img{width:120px;height:auto;border-radius:8px;flex:none}.af-share p{margin:4px 0 12px;font-size:.88rem;color:#666b64}.af-share-btns{display:flex;flex-wrap:wrap;gap:8px}.af-share-btns a{padding:8px 12px;border:1px solid #651d32;border-radius:8px;color:#651d32;font-size:.82rem;font-weight:700;text-decoration:none}.af-share-btns a:hover{background:#651d32;color:#fff}@media(max-width:740px){.af-share img{width:84px}.af-rel-grid{grid-template-columns:1fr}.af-next{padding:22px}}</style>"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "blog-post-title",
+        "blog-post-details",
+        "blog-post-image",
+        "blog-post-content",
+        "af_post_foot"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "gap": 32,
+        "background_color": "{{ settings.color_palette.background }}",
+        "padding-block-start": 40,
+        "padding-block-end": 80
+      }
+    }
+  },
+  "order": [
+    "section"
+  ]
+}
